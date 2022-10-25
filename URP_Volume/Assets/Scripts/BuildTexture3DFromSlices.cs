@@ -13,18 +13,38 @@ public class BuildTexture3DFromSlices : MonoBehaviour
     private string slicesPath= $"{Application.streamingAssetsPath}/default";
     private Texture3D texture3d;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        slicesPath = $"{Application.streamingAssetsPath}/{folderName}";
-        ReadFile();
-    }
-
     private void ReadFile()
     {
+        slicesPath = $"{Application.streamingAssetsPath}/{folderName}";
         Color[] texture3dColor = new Color[(int)(textureVolume.x * textureVolume.y * textureVolume.z)];
-        int sliceZ = 0;
-        foreach(string filePath in Directory.EnumerateFiles(slicesPath))
+        //int sliceZ = 0;
+        //foreach(string filePath in Directory.EnumerateFiles(slicesPath))
+        //{
+        //    string extension = Path.GetExtension(filePath).ToLower().Trim();
+        //    //Debug.Log($"File ext: {extension}");
+        //    if (!extension.Equals(".png") && !extension.Equals(".jpg")) continue;
+        //    Debug.Log($"File {filePath}");
+
+        //    byte[] bytes = File.ReadAllBytes(filePath);
+        //    Texture2D slice = new Texture2D(2, 2);
+        //    slice.LoadImage(bytes);
+        //    int z = 0;
+        //    int zOffset = z * (int)textureVolume.z;
+        //    for(int x = 0; x < textureVolume.x; x++)
+        //    {
+        //        int yOffset = x * (int)textureVolume.x;
+        //        for(int y = 0; y < textureVolume.y; y++)
+        //        {
+        //            Color32 color = slice.GetPixel(x, y);
+        //            texture3dColor[sliceZ * (int)textureVolume.x * (int)textureVolume.y + z] = color;
+        //            z++;
+        //        }
+        //    }
+        //    sliceZ++;
+        //}
+        Debug.Log($"color size : {texture3dColor.Length}");
+        int z = 0;
+        foreach (string filePath in Directory.EnumerateFiles(slicesPath))
         {
             string extension = Path.GetExtension(filePath).ToLower().Trim();
             //Debug.Log($"File ext: {extension}");
@@ -34,30 +54,28 @@ public class BuildTexture3DFromSlices : MonoBehaviour
             byte[] bytes = File.ReadAllBytes(filePath);
             Texture2D slice = new Texture2D(2, 2);
             slice.LoadImage(bytes);
-            int z = 0;
-            for(int x = 0; x < textureVolume.x; x++)
+            int zOffset = z * (int)textureVolume.x * (int)textureVolume.y;
+            for (int y = 0; y < textureVolume.y; y++)
             {
-                for(int y = 0; y < textureVolume.y; y++)
-                {
+                int yOffset = y * (int)textureVolume.x;
+                for (int x = 0; x < textureVolume.x; x++)
+                { 
                     Color color = slice.GetPixel(x, y);
-                    
-                    texture3dColor[sliceZ * (int)textureVolume.x * (int)textureVolume.y + z] = color;
-                    z++;
+                    texture3dColor[x + yOffset + zOffset] = color;
                 }
             }
-            sliceZ++;
+            z++;
+            
         }
 
         texture3d = new Texture3D((int)textureVolume.x, (int)textureVolume.y, (int)textureVolume.z, TextureFormat.RGBA32, false);
         texture3d.SetPixels(texture3dColor);
         texture3d.Apply();
-
-        AssetDatabase.CreateAsset(texture3d, $"Assets/Volume/3DTexture_{outputName}.asset");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void BuildTexture3D()
     {
-        
+        ReadFile();
+        AssetDatabase.CreateAsset(texture3d, $"Assets/Volume/3DTexture_{outputName}.asset");
     }
 }
