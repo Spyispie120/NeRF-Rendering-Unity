@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VolumeTexture
+  m_Name: VolumeTextureTree
   m_Shader: {fileID: 4800000, guid: 5d3c07ea7e9a880429cb300d726f3070, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
