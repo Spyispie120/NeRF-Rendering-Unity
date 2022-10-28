@@ -50,6 +50,7 @@ public class BuildTexture3DFromSlices : MonoBehaviour
         texture3d.Apply();
     }
 
+#if UNITY_EDITOR
     /// <summary>
     /// Create Texture3D asset from slices
     /// </summary>
@@ -58,4 +59,5 @@ public class BuildTexture3DFromSlices : MonoBehaviour
         ReadFile();
         AssetDatabase.CreateAsset(texture3d, $"Assets/Volume/3DTexture_{outputName}.asset");
     }
+#endif
 }
